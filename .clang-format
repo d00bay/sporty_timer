@@ -1,0 +1,9 @@
+# .clang-format
+BasedOnStyle: WebKit
+Language: Cpp
+IndentWidth: 2
+TabWidth: 2
+UseTab: Never
+AllowShortBlocksOnASingleLine: Never
+AllowShortIfStatementsOnASingleLine: Never
+BreakBeforeBraces: Attach

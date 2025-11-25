@@ -1,0 +1,14 @@
+# Build artifacts
+*.hex
+*.elf
+*.o
+*.map
+build/
+
+# Temporary files
+*.tmp
+header.txt
+
+# OS Junk
+.DS_Store
+Thumbs.db

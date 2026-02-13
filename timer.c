@@ -48,6 +48,8 @@ void timer_start(timer_t *t) {
 void timer_pause(timer_t *t) {
   if (t->state == TIMER_RUNNING) {
     t->state = TIMER_PAUSED;
+    if (t->display_fn) 
+      t->display_fn(t->time_remaining / 60, t->time_remaining % 60);
   }
 }
 

@@ -14,6 +14,7 @@
 #define F_CPU 8000000UL
 #include <avr/io.h>
 #include <util/delay.h>
+#include <stdio.h>:
 #include "ssd1306.h"
 #include "timer.h"
 
@@ -67,24 +68,28 @@ uint8_t is_btn_pressed(uint8_t pin) {
 }
 
 void update_oled(uint8_t m, uint8_t s) {
+  char status_str[128] = {0};
+
   ssd1306_draw_time(m, s);
 
   // Status Bar Logic
   if (my_timer.state == TIMER_FINISHED) {
-    ssd1306_print(40, 0, "DONE! ");
+    ssd1306_print(50, 0, "DONE! ");
   } 
   else if (my_timer.state == TIMER_PAUSED) {
-    ssd1306_print(40, 0, "PAUSE ");
+    ssd1306_print(50, 0, "PAUSE ");
   }
   else if (my_timer.is_round_mode) {
     if (my_timer.phase == PHASE_ACTIVE) {
-      ssd1306_print(40, 0, "WORK  ");
+      ssd1306_print(50, 0, "WORK");
     } else {
-      ssd1306_print(40, 0, "REST  ");
+      ssd1306_print(50, 0, "REST");
     }
+    sprintf(status_str, "%d/%d", my_timer.current_round, my_timer.total_rounds);
+    ssd1306_print(54, 7, status_str);
   } 
   else {
-    ssd1306_print(40, 0, "TIMER ");
+    ssd1306_print(20, 0, "TIMER ");
   }
 }
 

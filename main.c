@@ -14,9 +14,11 @@
 #define F_CPU 8000000UL
 #include <avr/io.h>
 #include <util/delay.h>
-#include <stdio.h>:
+#include <stdio.h>
 #include "ssd1306.h"
 #include "timer.h"
+#include "pcf8574.h"
+#include "buttons.h"
 
 // --- PRESET DEFINITIONS (Easily Redefined) ---
 
@@ -55,17 +57,6 @@ typedef enum {
 
 timer_t my_timer;
 current_preset_t active_preset = PRESET_NONE;
-
-// Debounce helper
-uint8_t is_btn_pressed(uint8_t pin) {
-  if (!(BTN_PORT & (1 << pin))) {
-    _delay_ms(50); 
-    if (!(BTN_PORT & (1 << pin))) {
-      return 1;
-    }
-  }
-  return 0;
-}
 
 void update_oled(uint8_t m, uint8_t s) {
   char status_str[128] = {0};
@@ -118,10 +109,10 @@ void handle_preset_btn(current_preset_t preset_id, uint16_t work,
 }
 
 int main(void) {
-  // Setup Buttons (Inputs with Pullups)
-  DDRB &= ~((1 << BTN_1_PIN) | (1 << BTN_2_PIN) | (1 << BTN_3_PIN));
-  PORTB |= (1 << BTN_1_PIN) | (1 << BTN_2_PIN) | (1 << BTN_3_PIN);
+  uint8_t btn, last_btn = -1;
   
+  buttons_init();
+
   _delay_ms(100);
   ssd1306_init();
   
@@ -132,27 +123,27 @@ int main(void) {
   uint16_t tick_counter = 0;
   
   while (1) {
+    btn = buttons_read();
+
     // --- BUTTON 1: Preset 1 ---
-    if (is_btn_pressed(BTN_1_PIN)) {
+    if ((btn & BTN1_MASK) && !(last_btn & BTN1_MASK)) {
       handle_preset_btn(PRESET_1, P1_WORK_SEC, P1_REST_SEC, P1_ROUNDS, 
                                                               P1_MODE);
-      while (is_btn_pressed(BTN_1_PIN)) {} // Wait for release
     }
     
     // --- BUTTON 2: Preset 2 ---
-    if (is_btn_pressed(BTN_2_PIN)) {
+    if ((btn & BTN2_MASK) && !(last_btn & BTN2_MASK)) {
       handle_preset_btn(PRESET_2, P2_WORK_SEC, P2_REST_SEC, P2_ROUNDS, 
                                                               P2_MODE);
-      while (is_btn_pressed(BTN_2_PIN)) {} 
     }
     
     // --- BUTTON 3: Preset 3 ---
-    if (is_btn_pressed(BTN_3_PIN)) {
+    if ((btn & BTN3_MASK) && !(last_btn & BTN3_MASK)) {
       handle_preset_btn(PRESET_3, P3_WORK_SEC, P3_REST_SEC, P3_ROUNDS, 
                                                               P3_MODE);
-      while (is_btn_pressed(BTN_3_PIN)) {}
     }
 
+    last_btn = btn;
     // --- TIMING LOOP ---
     _delay_ms(10);
     tick_counter++;

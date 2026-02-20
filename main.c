@@ -81,9 +81,9 @@ void update_oled(uint8_t m, uint8_t s) {
   }
   else if (my_timer.is_round_mode) {
     if (my_timer.phase == PHASE_ACTIVE) {
-      ssd1306_print(50, 0, "WORK");
+      ssd1306_print(50, 0, "WORK ");
     } else {
-      ssd1306_print(50, 0, "REST");
+      ssd1306_print(50, 0, "REST ");
     }
     sprintf(status_str, "%d/%d", my_timer.current_round, my_timer.total_rounds);
     ssd1306_print(54, 7, status_str);

@@ -13,6 +13,7 @@
 4. **Language:** C (AVR-GCC).
 
 # Next Tasks
+- Use pcf8574 so I can use 3 buttons and a buzzer
 - Refactor `main.c` to remove blocking `_delay_ms` logic.
 - Implement **Timer0 Interrupts (ISR)** for accurate 10ms timing.
 - Use the "Mailbox/Flag" pattern to ensure thread-safety with I2C.

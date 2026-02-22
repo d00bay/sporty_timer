@@ -53,7 +53,6 @@ bool i2c_write(uint8_t data) {
   I2C_DDR |= (1<<I2C_SDA);
 }
 
-// Added this for you (needed for reading sensors later)
 uint8_t i2c_read(uint8_t ack) {
   uint8_t data = 0;
   I2C_DDR &= ~(1<<I2C_SDA); // Set SDA as input

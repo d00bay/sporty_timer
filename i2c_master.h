@@ -29,7 +29,7 @@
 void i2c_init(void);
 void i2c_start(void);
 void i2c_stop(void);
-void i2c_write(uint8_t data);
+bool i2c_write(uint8_t data);
 // You'll likely need this for sensors later:
 uint8_t i2c_read(uint8_t ack); 
 

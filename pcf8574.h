@@ -14,10 +14,17 @@
 #ifndef PCF8574_H_
 #define PCF8574_H_
 
+#include <stdbool.h>
 #include <stdint.h>
 
-void pcf8574_init(uint8_t addr_7bit);
-uint8_t pcf8574_read(uint8_t addr_7bit);
-void pcf8574_write(uint8_t addr_7bit, uint8_t value);
+typedef struct {
+  uint8_t addr_7bit;
+  uint8_t out;
+} pcf8574_t;
+
+void pcf8574_init(pcf8574_t *d, uint8_t addr_7bit, uint8_t initial_out);
+bool pcf8574_write(pcf8574_t *d);
+bool pcf8574_read(pcf8574_t *d, uint8_t *value);
+bool pcf8574_set_bit(pcf8574_t *d, uint8_t bit, bool level);
 
 #endif

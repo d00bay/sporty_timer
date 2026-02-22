@@ -11,6 +11,8 @@
  *  - Naming: snake_case
  *  - Structure: One statement per line
  */
+#include <stdbool.h>
+
 #include "i2c_master.h"
 
 void i2c_init(void) {
@@ -34,7 +36,7 @@ void i2c_stop(void) {
   I2C_DDR &= ~((1<<I2C_SDA)|(1<<I2C_SCL));
 }
 
-void i2c_write(uint8_t data) {
+bool i2c_write(uint8_t data) {
   for(uint8_t i=0; i<8; i++) {
     if(data & 0x80) I2C_PORT |= (1<<I2C_SDA);
     else I2C_PORT &= ~(1<<I2C_SDA);

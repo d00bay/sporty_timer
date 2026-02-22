@@ -2,3 +2,10 @@
 *.swp
 *.swo
 *~
+
+# build artifacts
+build/
+*.o
+*.elf
+*.hex
+*.map

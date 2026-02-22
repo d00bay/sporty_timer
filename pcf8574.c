@@ -14,28 +14,48 @@
 #include "pcf8574.h"
 #include "i2c_master.h"
 
-void pcf8574_init(uint8_t addr_7bit)
-{
-  pcf8574_write(addr_7bit, 0xff);
+void pcf8574_init(pcf8574_t *d, uint8_t addr_7bit, uint8_t initial_out){
+  d->addr_7bit = addr_7bit;
+  d->out = initial_out;
+  (void)pcf8574_write(d);
 }
 
-void pcf8574_write(uint8_t addr_7bit, uint8_t value)
-{
+bool pcf8574_write(pcf8574_t *d){
   i2c_start();
-  i2c_write((addr_7bit << 1) | 0);
-  i2c_write(value);
+  if (!i2c_write(((uint8_t)((d->addr_7bit << 1) | 0)))) {
+    i2c_stop();
+    return false;
+  }
+  if(!i2c_write(d->out)) {
+    i2c_stop();
+    return false;
+  }
   i2c_stop();
 }
 
-uint8_t pcf8574_read(uint8_t addr_7bit)
-{
-  uint8_t v;
-
+bool pcf8574_read(pcf8574_t *d, uint8_t *value) {
   i2c_start();
-  i2c_write((addr_7bit << 1) | 1);
-  v = i2c_read(0);
+  if (!i2c_write((d->addr_7bit << 1) | 1)){
+    i2c_stop;
+    return false;
+  }
+  *value = i2c_read(0);
   i2c_stop();
+  return true;
+}
 
-  return v;
+bool pcf8574_set_bit(pcf8574_t *d, uint8_t bit, bool level) {
+  if (bit > 7) {
+    return false;
+  }
+
+  if (level) {
+    d->out |= (1u << bit);
+  }
+  else {
+    d->out &= ~(1u << bit);
+  }
+
+  return pcf8574_write(d);
 }
 

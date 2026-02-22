@@ -19,8 +19,12 @@
  * Configuration
  */
 
-#define USE_PCF8574 0
-#define PCF8574_ADDR 0x20
+#define USE_PCF8574     0
+#define PCF8574_ADDR    0x20
+#define PCF_BTN_MASK    0x07 // P0..P2
+#define PCF_BUZZER_BIT  3    // P3
+
+static pcf8574_t pcf;
 
 /*
  * GPIO implementation
@@ -61,19 +65,18 @@ static uint8_t buttons_gpio_read(void)
 
 static void buttons_pcf_init(void)
 {
-  pcf8574_init(PCF8574_ADDR);
+  pcf8574_init(&pcf, PCF8574_ADDR, 0xff);
 }
 
 static uint8_t buttons_pcf_read(void)
 {
   uint8_t value;
-  uint8_t buttons;
 
-  value = pcf8574_read(PCF8574_ADDR);
+  if (!pcf8574_read(&pcf, &value)) {
+    return 0;
+  }
 
-  buttons = (~value) & 0x07;
-
-  return buttons;
+  return (uint8_t)(~value) & PCF_BTN_MASK; 
 }
 
 /*

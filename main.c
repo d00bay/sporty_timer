@@ -15,10 +15,11 @@
 #include <avr/io.h>
 #include <util/delay.h>
 #include <stdio.h>
+#include "i2c_master.h"
 #include "ssd1306.h"
 #include "timer.h"
+#include "board.h"
 #include "pcf8574.h"
-#include "buttons.h"
 
 // --- PRESET DEFINITIONS (Easily Redefined) ---
 
@@ -40,12 +41,10 @@
 #define P3_ROUNDS      5    // Adjust rounds as needed
 #define P3_MODE        1
 
-// --- HARDWARE CONFIG ---
-// PB1, PB3, PB4 are the only safe pins left after I2C
-#define BTN_1_PIN PB1 
-#define BTN_2_PIN PB3
-#define BTN_3_PIN PB4
-#define BTN_PORT PINB
+// buttons pins
+#define BTN1_MASK (1U << 1)
+#define BTN2_MASK (1U << 2)
+#define BTN3_MASK (1U << 3)
 
 // Helper enum to track which preset is loaded
 typedef enum {
@@ -111,19 +110,31 @@ void handle_preset_btn(current_preset_t preset_id, uint16_t work,
 int main(void) {
   uint8_t btn, last_btn = -1;
   
-  buttons_init();
 
+  i2c_init();
   _delay_ms(100);
   ssd1306_init();
   
   // Start with a blank screen or specific text
   ssd1306_print(30, 0, "SELECT");
   ssd1306_print(40, 3, "MODE");
-  
+
   uint16_t tick_counter = 0;
-  
+
+  // Test for buzzer
+  board_init();
+/*
+  basic test
   while (1) {
-    btn = buttons_read();
+    _delay_ms(1000);
+    board_buzzer_on();
+    _delay_ms(400);
+    board_buzzer_off();
+  } 
+*/
+
+  while (1) {
+    btn = board_read_buttons();
 
     // --- BUTTON 1: Preset 1 ---
     if ((btn & BTN1_MASK) && !(last_btn & BTN1_MASK)) {
@@ -153,7 +164,7 @@ int main(void) {
       
       timer_state_t prev_state = my_timer.state;
       timer_tick(&my_timer); 
-      
+      ssd1306_flash_screen(1); 
       if (prev_state == TIMER_RUNNING && my_timer.state == TIMER_FINISHED) {
         ssd1306_flash_screen(5);
         active_preset = PRESET_NONE; // Reset logic so next press reloads

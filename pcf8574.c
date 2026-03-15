@@ -31,12 +31,13 @@ bool pcf8574_write(pcf8574_t *d){
     return false;
   }
   i2c_stop();
+  return true;
 }
 
 bool pcf8574_read(pcf8574_t *d, uint8_t *value) {
   i2c_start();
   if (!i2c_write((d->addr_7bit << 1) | 1)){
-    i2c_stop;
+    i2c_stop();
     return false;
   }
   *value = i2c_read(0);

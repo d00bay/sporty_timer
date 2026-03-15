@@ -15,31 +15,61 @@
 
 #include "i2c_master.h"
 
+static void sda_low(void) {
+  I2C_PORT &= ~(1 << I2C_SDA);
+  I2C_DDR |= (1 << I2C_SDA);
+}
+
+static void sda_release(void) {
+  I2C_DDR &= ~(1 << I2C_SDA);
+}
+
+static void scl_low(void) {
+  I2C_PORT &= ~(1 << I2C_SCL);
+  I2C_DDR |= (1 << I2C_SCL);
+}
+
+static void scl_release(void) {
+  I2C_DDR &= ~(1 << I2C_SCL);
+}
+
 void i2c_init(void) {
   // Optional: Set default states, though often done in start()
   I2C_PORT |= (1<<I2C_SDA) | (1<<I2C_SCL);
+  I2C_DDR &= ~((1 << I2C_SDA) | (1 << I2C_SCL));
 }
 
 void i2c_start(void) {
-  I2C_DDR |= (1<<I2C_SDA) | (1<<I2C_SCL);
-  I2C_PORT &= ~(1<<I2C_SDA);
-  _delay_us(4); // Increased slightly for safety with sensors
-  I2C_PORT &= ~(1<<I2C_SCL);
+  sda_release();
+  scl_release();
+  _delay_us(4);
+
+  sda_low();
+  _delay_us(4);
+
+  scl_low();
+  _delay_us(4);
 }
 
 void i2c_stop(void) {
-  I2C_DDR |= (1<<I2C_SDA);
-  I2C_PORT &= ~(1<<I2C_SDA);
-  I2C_PORT |= (1<<I2C_SCL);
+  sda_low();
   _delay_us(4);
-  I2C_PORT |= (1<<I2C_SDA);
-  I2C_DDR &= ~((1<<I2C_SDA)|(1<<I2C_SCL));
+
+  scl_release();
+  _delay_us(4);
+
+  sda_release();
+  _delay_us(4);
 }
 
 bool i2c_write(uint8_t data) {
+  I2C_DDR |= (1 << I2C_SDA);
+
   for(uint8_t i=0; i<8; i++) {
-    if(data & 0x80) I2C_PORT |= (1<<I2C_SDA);
-    else I2C_PORT &= ~(1<<I2C_SDA);
+    if(data & 0x80) 
+      I2C_PORT |= (1<<I2C_SDA);
+    else 
+      I2C_PORT &= ~(1<<I2C_SDA);
     I2C_PORT |= (1<<I2C_SCL);
     _delay_us(4);
     I2C_PORT &= ~(1<<I2C_SCL);
@@ -47,10 +77,14 @@ bool i2c_write(uint8_t data) {
   }
   // Handle ACK/NACK pulse (we ignore the actual bit for the OLED)
   I2C_DDR &= ~(1<<I2C_SDA);
+  I2C_PORT |= (1<<I2C_SDA);
   I2C_PORT |= (1<<I2C_SCL);
-  _delay_us(4);
+  _delay_us(2);
+
+  bool ack = !(I2C_PIN & (1 << I2C_SDA)); // Ack == SDA low
+
   I2C_PORT &= ~(1<<I2C_SCL);
-  I2C_DDR |= (1<<I2C_SDA);
+  return ack;
 }
 
 uint8_t i2c_read(uint8_t ack) {

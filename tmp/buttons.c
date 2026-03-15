@@ -15,16 +15,9 @@
 #include "pcf8574.h"
 #include <avr/io.h>
 
-/*
- * Configuration
- */
-
-#define USE_PCF8574     0
 #define PCF8574_ADDR    0x20
-#define PCF_BTN_MASK    0x07 // P0..P2
-#define PCF_BUZZER_BIT  3    // P3
-
-static pcf8574_t pcf;
+#define USE_PCF8574     1
+#define PCF_BTN_MASK    0x70 // P0..P2
 
 /*
  * GPIO implementation

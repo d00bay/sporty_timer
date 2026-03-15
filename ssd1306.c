@@ -132,7 +132,6 @@ static void draw_big_digit(uint8_t index, uint8_t col, uint8_t row) {
 // --- PUBLIC FUNCTIONS ---
 
 void ssd1306_init(void) {
-  I2C_PORT |= (1<<I2C_SDA) | (1<<I2C_SCL);
   oled_cmd(0xAE); 
   oled_cmd(0xD5); 
   oled_cmd(0x80);

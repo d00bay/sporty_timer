@@ -53,7 +53,7 @@ flash: $(TARGET).hex
 # Check memory usage
 size: $(TARGET).elf
 	@echo
-	@$(SIZE) --mcu=$(MCU) --format=avr $(TARGET).elf
+	@$(SIZE) $(TARGET).elf
 
 # Clean up build files
 clean:

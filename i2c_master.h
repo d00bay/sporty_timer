@@ -15,6 +15,7 @@
 #ifndef I2C_MASTER_H
 #define I2C_MASTER_H
 
+#include <stdbool.h>
 #include <avr/io.h>
 #include <util/delay.h>
 
@@ -23,6 +24,7 @@
 #define I2C_SCL PB2
 #define I2C_PORT PORTB
 #define I2C_DDR  DDRB
+#define I2C_PIN  PINB
 
 // --- PROTOTYPES ---
 void i2c_init(void);

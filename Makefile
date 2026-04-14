@@ -23,7 +23,9 @@ AVRDUDE      = avrdude
 # -Os: Optimize for size (Crucial for ATtiny85)
 # -Wall: Enable all warnings
 CFLAGS       = -mmcu=$(MCU) -DF_CPU=$(F_CPU) -Os -Wall -Wextra -std=gnu99
+CFLAGS	     += -I/usr/avr/include
 LDFLAGS      = -mmcu=$(MCU)
+LDFLAGS      += -B/usr/avr/lib/avr25 -L/usr/avr/lib/avr25 -L/usr/avr/lib
 
 # --- BUILD RULES ---
 

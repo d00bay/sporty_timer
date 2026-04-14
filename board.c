@@ -27,8 +27,8 @@ static pcf8574_t pcf;
 
 void board_init(void) 
 {
-  pcf8574_init(&pcf, PCF8574_ADDR, 0xff);
-  (void)pcf8574_set_bit(&pcf, PCF_BUZZER_BIT, false);
+  uint8_t init_state = 0xff & ~(1 << PCF_BUZZER_BIT);
+  pcf8574_init(&pcf, PCF8574_ADDR, init_state);
 }
 
 uint8_t board_read_buttons(void) 
@@ -36,7 +36,7 @@ uint8_t board_read_buttons(void)
   uint8_t value;
 
   pcf.out |= PCF_BTN_MASK;
-  pcf.out |= (1 << PCF_BUZZER_BIT);
+  pcf.out &= ~(1 << PCF_BUZZER_BIT);
   (void)pcf8574_write(&pcf);
 
   if (!pcf8574_read(&pcf, &value)) {
@@ -48,15 +48,11 @@ uint8_t board_read_buttons(void)
 
 void board_buzzer_on(void) 
 {
-  //  (void)pcf8574_set_bit(&pcf, 0, true);  
-  pcf.out = 0xff;
-  pcf8574_write(&pcf);
+  (void)pcf8574_set_bit(&pcf, 0, true);  
 }
 
 void board_buzzer_off(void) 
 {
-//  (void)pcf8574_set_bit(&pcf, 0, false);  
-  pcf.out = 0xfe;
-  pcf8574_write(&pcf);
+  (void)pcf8574_set_bit(&pcf, 0, false);  
 }
 

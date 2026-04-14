@@ -207,12 +207,10 @@ void ssd1306_print(uint8_t x, uint8_t page, const char *str) {
   i2c_stop();
 }
 
-// NEW: Flash screen (Invert colors)
-void ssd1306_flash_screen(uint8_t count) {
-  for (uint8_t i = 0; i < count; i++) {
-    oled_cmd(0xA7); // Inverse Display (White background, Black text)
-    _delay_ms(100);
-    oled_cmd(0xA6); // Normal Display
-    _delay_ms(100);
-  }
+void ssd1306_invert(bool toggle) {
+  if (toggle) 
+    oled_cmd(0xA7);
+  else
+    oled_cmd(0xA6);
 }
+

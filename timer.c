@@ -59,27 +59,27 @@ void timer_tick(timer_t *t) {
   
   if (t->time_remaining > 0) {
     t->time_remaining--;
-  } else {
+  } 
+  else {
     // Time hit 0
     if (t->is_round_mode) {
       // Round Logic
       if (t->phase == PHASE_ACTIVE) {
-        // Work done, switch to rest
-        t->phase = PHASE_REST;
-        t->time_remaining = t->rest_duration;
-        // Optional: You could trigger a buzzer here
-      } else {
-         // Rest done, switch to next round
-        t->current_round++;
-        if (t->current_round > t->total_rounds) {
+        if (t->current_round >= t->total_rounds) 
           t->state = TIMER_FINISHED;
-                  // Timer done
-        } else {
-            t->phase = PHASE_ACTIVE;
-            t->time_remaining = t->active_duration;
+        else {
+          // Work done, switch to rest
+          t->phase = PHASE_REST;
+          t->time_remaining = t->rest_duration;
         }
+      } 
+      else {
+        t->current_round++;
+        t->phase = PHASE_ACTIVE;
+        t->time_remaining = t->active_duration;
       }
-    } else {
+    } 
+    else {
       // Simple Countdown Logic
       t->state = TIMER_FINISHED;
     }

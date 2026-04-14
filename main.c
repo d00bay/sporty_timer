@@ -24,20 +24,20 @@
 // --- PRESET DEFINITIONS (Easily Redefined) ---
 
 // Preset 1: Simple Countdown
-#define P1_WORK_SEC    300  // 5 Minutes
+#define P1_WORK_SEC    30  // 5 Minutes
 #define P1_REST_SEC    0    // Not used
 #define P1_ROUNDS      0    // Not used
 #define P1_MODE        0    // 0 = Simple, 1 = Round/Tabata
 
 // Preset 2: Tabata (2m Work, 30s Rest)
-#define P2_WORK_SEC    120  // 2 Minutes
-#define P2_REST_SEC    30   // 30 Seconds
+#define P2_WORK_SEC    12  // 2 Minutes
+#define P2_REST_SEC    3   // 30 Seconds
 #define P2_ROUNDS      8    // Standard Tabata sets (adjust as needed)
 #define P2_MODE        1
 
 // Preset 3: Tabata (3m Work, 1m Rest)
-#define P3_WORK_SEC    180  // 3 Minutes
-#define P3_REST_SEC    60   // 1 Minute
+#define P3_WORK_SEC    18  // 3 Minutes
+#define P3_REST_SEC    6   // 1 Minute
 #define P3_ROUNDS      5    // Adjust rounds as needed
 #define P3_MODE        1
 
@@ -79,7 +79,7 @@ void update_oled(uint8_t m, uint8_t s) {
     ssd1306_print(54, 7, status_str);
   } 
   else {
-    ssd1306_print(20, 0, "TIMER ");
+    ssd1306_print(50, 0, "TIMER ");
   }
 }
 
@@ -107,6 +107,19 @@ void handle_preset_btn(current_preset_t preset_id, uint16_t work,
   //  but for simplicity in this helper, we'll handle the wait in the main loop)
 }
 
+void timer_done() {
+  uint8_t i;
+  
+  for (i = 0; i < 4; i++) {
+    ssd1306_invert(true);
+    board_buzzer_on();
+    _delay_ms(120);
+    ssd1306_invert(false);
+    board_buzzer_off();
+    _delay_ms(120);
+  }
+}
+ 
 int main(void) {
   uint8_t btn, last_btn = -1;
   
@@ -123,9 +136,9 @@ int main(void) {
 
   // Test for buzzer
   board_init();
-/*
-  basic test
-  while (1) {
+  board_buzzer_off();
+  //basic test
+  /*while (1) {
     _delay_ms(1000);
     board_buzzer_on();
     _delay_ms(400);
@@ -134,6 +147,7 @@ int main(void) {
 */
 
   while (1) {
+
     btn = board_read_buttons();
 
     // --- BUTTON 1: Preset 1 ---
@@ -164,9 +178,8 @@ int main(void) {
       
       timer_state_t prev_state = my_timer.state;
       timer_tick(&my_timer); 
-      ssd1306_flash_screen(1); 
       if (prev_state == TIMER_RUNNING && my_timer.state == TIMER_FINISHED) {
-        ssd1306_flash_screen(5);
+        timer_done();
         active_preset = PRESET_NONE; // Reset logic so next press reloads
       }
     }

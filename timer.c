@@ -62,7 +62,6 @@ void timer_tick(timer_t *t) {
     t->time_remaining--;
   } 
   else {
-    // Time hit 0
     if (t->is_round_mode) {
       // Round Logic
       if (t->phase == PHASE_ACTIVE) {

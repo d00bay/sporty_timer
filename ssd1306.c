@@ -176,7 +176,6 @@ void ssd1306_draw_time(uint8_t minutes, uint8_t seconds) {
   draw_big_digit(seconds % 10, 104, 2);
 }
 
-// NEW: Print standard text
 void ssd1306_print(uint8_t x, uint8_t page, const char *str) {
   oled_cmd(0x20); 
   oled_cmd(0x02); // Page Addressing Mode

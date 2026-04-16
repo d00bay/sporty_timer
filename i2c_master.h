@@ -26,12 +26,10 @@
 #define I2C_DDR  DDRB
 #define I2C_PIN  PINB
 
-// --- PROTOTYPES ---
 void i2c_init(void);
 void i2c_start(void);
 void i2c_stop(void);
 bool i2c_write(uint8_t data);
-// maybe needed this for sensors later:
 uint8_t i2c_read(uint8_t ack); 
 
 #endif

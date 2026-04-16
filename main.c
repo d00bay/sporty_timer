@@ -134,17 +134,8 @@ int main(void) {
 
   uint16_t tick_counter = 0;
 
-  // Test for buzzer
   board_init();
   board_buzzer_off();
-  //basic test
-  /*while (1) {
-    _delay_ms(1000);
-    board_buzzer_on();
-    _delay_ms(400);
-    board_buzzer_off();
-  } 
-*/
 
   while (1) {
 

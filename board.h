@@ -21,6 +21,7 @@ void board_init(void);
 uint8_t board_read_buttons(void);
 void board_buzzer_on(void);
 void board_buzzer_off(void);
+void board_buzzer_beep(uint8_t n);
 
 #endif
 

@@ -12,6 +12,7 @@
  *  - Structure: One statement per line
  */
 #include "timer.h"
+#include "board.h"
 
 void timer_setup(timer_t *t, uint16_t active, uint16_t rest, 
               uint8_t rounds, uint8_t round_mode, display_callback_t cb) {
@@ -71,12 +72,14 @@ void timer_tick(timer_t *t) {
           // Work done, switch to rest
           t->phase = PHASE_REST;
           t->time_remaining = t->rest_duration;
+          board_buzzer_beep(1);
         }
       } 
       else {
         t->current_round++;
         t->phase = PHASE_ACTIVE;
         t->time_remaining = t->active_duration;
+        board_buzzer_beep(2);
       }
     } 
     else {

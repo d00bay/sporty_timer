@@ -11,13 +11,14 @@
  *  - Naming: snake_case
  *  - Structure: One statement per line
  */
+#include <stdio.h>
+#include <avr/io.h>
+#include <util/delay.h>
+
 #include "board.h"
 #include "pcf8574.h"
 // temporary for debug, remove later
 #include "ssd1306.h"
-#include <stdio.h>
-#include <avr/io.h>
-
 
 #define PCF8574_ADDR    0x20
 #define PCF_BTN_MASK    0x0E /* P0 to P2 */
@@ -56,3 +57,11 @@ void board_buzzer_off(void)
   (void)pcf8574_set_bit(&pcf, 0, false);  
 }
 
+void board_buzzer_beep(uint8_t n) {
+  for (uint8_t i = 0; i < n; i++) {
+    board_buzzer_on();
+    _delay_ms(120);
+    board_buzzer_off();
+    _delay_ms(120);
+  }
+}

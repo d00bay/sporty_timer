@@ -12,7 +12,7 @@
 3. **Formatting:** ONE statement per line. No `cmd(); cmd();`.
 4. **Language:** C (AVR-GCC).
 
-# Next Tasks
+# Possible Next Tasks for v2
 - Refactor `main.c` to remove blocking `_delay_ms` logic.
 - Implement **Timer0 Interrupts (ISR)** for accurate 10ms timing.
 - Use the "Mailbox/Flag" pattern to ensure thread-safety with I2C.
